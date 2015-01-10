@@ -1739,8 +1739,9 @@ if __name__ == '__main__':
     print "Big Patch Version %s:%s" % (BRANCH_ID, SCRIPT_VERSION)
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group()
-    parser.add_argument("-r", "--openstack-release", required=True,
-                        help="Name of OpenStack release (Juno or Icehouse).")
+    # 2.5 only supports icehouse
+    #parser.add_argument("-r", "--openstack-release", required=True,
+    #                    help="Name of OpenStack release (Juno or Icehouse).")
     group.add_argument("-i", "--stand-alone", action='store_true',
                        help="Configure the server running this script "
                             "(root privileges required).")
@@ -1840,5 +1841,5 @@ if __name__ == '__main__':
         environment.check_interface_errors = False
     deployer = ConfigDeployer(environment,
                               patch_python_files=not args.skip_file_patching,
-                              openstack_release=args.openstack_release)
+                              openstack_release='icehouse')
     deployer.deploy_to_all()
