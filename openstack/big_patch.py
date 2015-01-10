@@ -19,7 +19,7 @@ except:
     pass
 
 # Arbitrary identifier printed in output to make tracking easy
-BRANCH_ID = 'master'
+BRANCH_ID = 'bcf-2.5'
 SCRIPT_VERSION = '1.1.3'
 
 # Maximum number of threads to deploy to nodes concurrently
