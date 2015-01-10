@@ -5,7 +5,7 @@
 #
 # This script is used to set up cloud stack management node
 # and compute nodes with Big Cloud Fabric. The requirements are:
-# BCF: 2.0.1 or higher
+# BCF 2.5
 # installation node: ubuntu 12.04, centos 6.5 or centos 6.6
 # management node: ubuntu 12.04, centos 6.5 or centos 6.6
 # compute node: ubuntu 12.04 centos6.5, centos 6.6 or xenserver 6.2
@@ -51,7 +51,7 @@ if [[ $? == 0 ]]; then
     sudo apt-get install -y sshpass python-yaml python-pip python-dev
     sudo pip install futures subprocess32
     rm -f /home/root/bcf/big_patch.py
-    wget --no-check-certificate https://raw.githubusercontent.com/bigswitch/deployment-support/master/cloudstack/big_patch.py -P /home/root/bcf
+    wget --no-check-certificate https://raw.githubusercontent.com/bigswitch/deployment-support/bcf-2.5/cloudstack/big_patch.py -P /home/root/bcf
     python /home/root/bcf/big_patch.py -c /home/root/bcf/${config}
     exit 0
 fi
@@ -81,7 +81,7 @@ if [[ $? == 0 ]]; then
     easy_install pyyaml;
     easy_install subprocess32;
     rm -f /home/root/bcf/big_patch.py;
-    wget --no-check-certificate https://raw.githubusercontent.com/bigswitch/deployment-support/master/cloudstack/big_patch.py -P /home/root/bcf/;
+    wget --no-check-certificate https://raw.githubusercontent.com/bigswitch/deployment-support/bcf-2.5/cloudstack/big_patch.py -P /home/root/bcf/;
     python /home/root/bcf/big_patch.py -c /home/root/bcf/${config}"
     exit 0
 fi

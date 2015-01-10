@@ -3,7 +3,7 @@
 #
 # This script is used to set up cloud stack management node
 # and compute nodes with Big Cloud Fabric. The requirements are:
-# BCF: 2.0.1 or higher
+# BCF 2.5
 # installation node: ubuntu 12.04, centos 6.5 or centos 6.6
 # management node: ubuntu 12.04, centos 6.5 or centos 6.6
 # compute node: ubuntu 12.04, centos 6.5, centos 6.6 or xenserver 6.2
@@ -2494,7 +2494,8 @@ if __name__ == '__main__':
                 config = yaml.load(config_file)
             deploy_to_all(config)
     else:
-        safe_print("This script supports Ubuntu 12.04, centos 6.5 or centos 6.6 as the CloudStack management node.\n"
+        safe_print("This script supports BCF 2.5.\n"
+                   "Ubuntu 12.04, centos 6.5 or centos 6.6 as the CloudStack management node.\n"
                    "CloudStack compute node can be either Ubuntu 12.04 centos 6.5, centos 6.6 or XenServer 6.2.\n"
                    "Use -h for how to use this script.\n")
 
