@@ -91,6 +91,7 @@ class Environment(object):
     extra_template_params = {}
     offline_mode = False
     check_interface_errors = True
+    bond_mode = 2
 
     def run_command_on_node(self, node, command, timeout=60, retries=0):
         raise NotImplementedError()
@@ -479,7 +480,8 @@ class ConfigDeployer(object):
                 not self.env.extra_template_params.get('force_services_restart',
                                                        False)
             ).lower(),
-            'offline_mode': str(self.env.offline_mode).lower()
+            'offline_mode': str(self.env.offline_mode).lower(),
+            'bond_mode': self.env.bond_mode
         }
         if bond_interfaces:
             for bondint in bond_interfaces:
@@ -752,7 +754,7 @@ class PuppetTemplate(object):
             'bigswitch_serverauth': '', 'network_vlan_ranges': '',
             'physical_bridge': 'br-ovs-bond0', 'bridge_mappings': '',
             'neutron_path': '', 'neutron_restart_refresh_only': '',
-            'offline_mode': ''
+            'offline_mode': '', 'bond_mode': ''
         }
         self.files_to_replace = []
         for key in settings:
@@ -804,6 +806,7 @@ $bond_updelay = '15000'
 # time in seconds between lldp transmissions
 $lldp_transmit_interval = '5'
 $offline_mode = %(offline_mode)s
+$bond_mode = %(bond_mode)s
 """  # noqa
     neutron_body = r'''
 if $operatingsystem == 'Ubuntu'{
@@ -1441,7 +1444,8 @@ bond-master bond0
 
 auto bond0
     iface bond0 inet manual
-    bond-mode 0
+    bond-mode ${bond_mode}
+    bond-xmit_hash_policy 1
     bond-miimon 50
     bond-updelay ${bond_updelay}
     bond-slaves none
@@ -1568,7 +1572,7 @@ DEVICE=bond0
 USERCTL=no
 BOOTPROTO=none
 ONBOOT=yes
-BONDING_OPTS='mode=0 miimon=50 updelay=${bond_updelay}'
+BONDING_OPTS='mode=${bond_mode} miimon=50 updelay=${bond_updelay} xmit_hash_policy=1'
 ",
     }
     file{'bond_int0config':
@@ -1636,7 +1640,7 @@ DEVICE=bond0
 USERCTL=no
 BOOTPROTO=none
 ONBOOT=yes
-BONDING_OPTS='mode=0 miimon=50 updelay=${bond_updelay}'
+BONDING_OPTS='mode=${bond_mode} miimon=50 updelay=${bond_updelay} xmit_hash_policy=1'
 ",
     }
     file{'bond_int0config':
@@ -1722,6 +1726,9 @@ if __name__ == '__main__':
                              "prerequisites on the individual nodes.")
     parser.add_argument('--ignore-interface-errors', action='store_true',
                         help="Suppress warnings about interface errors.")
+    parser.add_argument("--bond-mode", default="xor",
+                        help="Mode to set on node bonds (xor or round-robin). "
+                             "(Default is xor.)")
     remote = parser.add_argument_group('remote-deployment')
     remote.add_argument('--skip-nodes',
                         help="Comma-separate list of nodes to skip deploying "
@@ -1782,6 +1789,11 @@ if __name__ == '__main__':
     else:
         parser.error('You must specify the Fuel environment, the config '
                      'file, or standalone mode.')
+    allowed_bond_modes = {'xor': 2, 'round-robin': 0}
+    if args.bond_mode not in allowed_bond_modes:
+        parser.error('Unsupported bond mode: "%s". Supported modes: "%s"'
+                     % (args.bond_mode, allowed_bond_modes))
+    environment.bond_mode = allowed_bond_modes[args.bond_mode]
     environment.set_bigswitch_servers(args.controllers)
     environment.set_bigswitch_auth(args.controller_auth)
     environment.set_neutron_id(neutron_id)
