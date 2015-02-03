@@ -20,7 +20,7 @@ except:
 
 # Arbitrary identifier printed in output to make tracking easy
 BRANCH_ID = 'bcf-2.5'
-SCRIPT_VERSION = '1.1.3'
+SCRIPT_VERSION = '1.1.4'
 
 # Maximum number of threads to deploy to nodes concurrently
 MAX_THREADS = 20
