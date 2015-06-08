@@ -116,7 +116,11 @@ if [[ $install_all == true ]]; then
             fs=('openstack_dashboard/dashboards/admin/dashboard.py' 'openstack_dashboard/dashboards/project/dashboard.py' 'openstack_dashboard/dashboards/admin/connections' 'openstack_dashboard/dashboards/project/connections')
             for f in "${fs[@]}"
             do
-                yes | cp -rfp %(dst_dir)s/%(horizon_patch_dir)s/$f %(horizon_base_dir)s/$f
+                if [[ -f %(dst_dir)s/%(horizon_patch_dir)s/$f ]]; then
+                    yes | cp -rfp %(dst_dir)s/%(horizon_patch_dir)s/$f %(horizon_base_dir)s/$f
+                else
+                    yes | cp -rfp %(dst_dir)s/%(horizon_patch_dir)s/$f/* %(horizon_base_dir)s/$f
+                fi
             done
             find "%(horizon_base_dir)s" -name "*.pyc" -exec rm -rf {} \;
             find "%(horizon_base_dir)s" -name "*.pyo" -exec rm -rf {} \;
