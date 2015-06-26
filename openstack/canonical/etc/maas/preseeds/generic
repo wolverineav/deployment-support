@@ -48,8 +48,6 @@ d-i apt-setup/local0/key string file:///tmp/maas-{{driver['package']}}/repo_key.
 d-i     preseed/late_command string true && \
     in-target sh -c 'f=$1; shift; echo $0 > $f && chmod 0440 $f $*' 'ubuntu ALL=(ALL) NOPASSWD: ALL' /etc/sudoers.d/maas && \
     in-target wget --no-proxy "{{node_disable_pxe_url|escape.shell}}" --post-data "{{node_disable_pxe_data|escape.shell}}" -O /dev/null && \
-    in-target touch /usr/share/bsn.txt && \
-    in-target echo "why does this not work?" > /usr/share/bsn.txt && \
     in-target wget --no-proxy -O /usr/local/bin/bond-setup.sh http://10.4.4.131/MAAS/static/bsn/bond-setup.sh && \
     in-target chmod +x /usr/local/bin/bond-setup.sh && \
     in-target wget --no-proxy -O /etc/init/maas-bondinit.conf http://10.4.4.131/MAAS/static/bsn/maas-bondinit.conf.{{node.fqdn}} && \
