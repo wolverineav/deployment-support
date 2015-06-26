@@ -1,0 +1,12 @@
+description "Bonding Setup"
+start on starting udevtrigger
+
+task
+script
+  if [ -e /usr/local/bin/bond-setup.sh  ] && [ -x /usr/local/bin/bond-setup.sh ] ; then
+    /usr/local/bin/bond-setup.sh -bname=bond0 -iface1=eth2 -iface=eth3
+  else
+    echo "Either file does not exist or execute permission denied : /usr/local/bin/bond-setup.sh"
+    exit 1
+  fi
+end-script

@@ -1,0 +1,14 @@
+This contains files to be updated in MAAS setup to deploy vanilla Ubuntu images
+with bond interface setup for use by Juju.
+
+Directory hierarchy present here is the same location where the file is placed
+in actual installation.
+
+Relevant files:
+ - preseeds/generic - Installation directives given to first install. Bond setup
+script is copied over during first install
+ - static/bsn/bond-setup.sh - pass interface name as params and configure bond interface
+ - static/bsn/maas-bondinit.conf.{{node.fqdn}} - name of the file ends with node's 
+fully qualified domain name. Each node will have its own configuration. If all
+nodes are identical in number and type of interfaces, all can be the same.
+
