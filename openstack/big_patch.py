@@ -304,6 +304,7 @@ class FuelEnvironment(SSHEnvironment):
         except Exception as e:
             raise Exception("Error encountered trying to execute the Fuel "
                             "CLI:\n%s" % e)
+        errors = self.eliminate_harmless_deprecated_warning(errors)
         if errors:
             raise Exception("Error Loading cluster %s:\n%s"
                             % (environment_id, errors))
@@ -336,6 +337,17 @@ class FuelEnvironment(SSHEnvironment):
             raise Exception("Could not parse node list:\n%s" % output)
         for node in self.nodes:
             self.node_settings[node] = self.get_node_config(node)
+
+    def eliminate_harmless_deprecated_warning(self, errors):
+        # ignore deprecated warning in Fuel6.1
+        actual_errors = []
+        errors = errors.splitlines()
+        for e in errors:
+            # ignore some warnings
+            if "DEPRECATION WARNING: /etc/fuel/client/config.yaml exists" in e:
+                continue
+            actual_errors.append(e)
+        return '\n'.join(actual_errors)
 
     def get_node_config(self, node):
         print "Retrieving Fuel configuration for node %s..." % node
